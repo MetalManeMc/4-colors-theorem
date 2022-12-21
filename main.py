@@ -3,6 +3,8 @@ import turtle as t
 from random import *
 import time
 
+colors = [(0, 0, 248)]
+
 
 def ktt(coo: list):
     coo[0] -= 160
@@ -28,7 +30,6 @@ def initialize():  # initialise l'écran
     t.goto(160, -111)
     t.goto(-160, -111)
     t.hideturtle()
-
 
 def draw_borders():
     for i in range(20):
@@ -70,5 +71,9 @@ def draw_borders():
                     k.set_pixel(L, l, (0, 0, 0))
 
 
+def fill_colors():
+    pass
+
 initialize()
 draw_borders()
+fill_colors()
