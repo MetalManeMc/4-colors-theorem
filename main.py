@@ -6,13 +6,13 @@ import time
 colors = [(0, 0, 248)]
 
 
-def ktt(coo: list):
+def ktt(coo: list): #kandinsky to turtle
     coo[0] -= 160
     coo[1] = -coo[1]+111
     return coo
 
 
-def ttk(coo: list):
+def ttk(coo: list): #turtle to kandinsky
     coo[0] += 160
     coo[1] = -coo[1]+111
     return coo
@@ -21,6 +21,7 @@ def ttk(coo: list):
 def initialize():  # initialise l'écran
     # uniformise le fond d'écran en blanc
     k.fill_rect(0, 0, 320, 222, k.color(248, 252, 248))
+    t.speed(10)
     t.penup()
     # dessine un cadre noir
     t.goto(-160, -111)
@@ -32,38 +33,33 @@ def initialize():  # initialise l'écran
     t.hideturtle()
 
 def draw_borders():
-    for i in range(20):
+    t.speed(10)
+    for i in range(50):
         t.penup()
-        # cherche un point noir d'où commencer le tracé
+        # cherche un pixel d'où commencer le tracé
         x = randrange(0, 321)
         y = randrange(0, 223)
         while k.get_pixel(x, y) != (0, 0, 0):
             x = randrange(0, 321)
             y = randrange(0, 223)
-        #print(x, y, ktt([x, y]))
         t.goto(ktt([x, y]))
-        # prend un angle apporprié à la position
-        if x <= 30:
-            t.setheading(0)
-        elif x >= 190:
-            t.setheading(180)
-        elif y <= 30:
+        # prend un angle approprié à la position
+        if x <=160:
             t.setheading(270)
-        elif y >= 192:
+        elif x >160:
             t.setheading(90)
-        # modifie légèrement l'angle
-        t.setheading(t.heading()+randrange(-3, 3))
-        #print(t.position(), ttk(list(t.position())))
+        if y <=111:
+            t.setheading(0)
+        elif y >111:
+            t.setheading(180)
+        # modifie l'angle
+        t.setheading(t.heading()+randrange(-10, 10))
         t.forward(1)
         t.color("blue")
-        # teste si le pixel devant est noir. S'il ne l'est pas, avance.
+        # Si le pixel est blanc, avance.
         while k.get_pixel(int(ttk(list(t.position()))[0]), int(ttk(list(t.position()))[1])) != (0, 0, 0):
-            t.pendown()
-            t.backward(1)
             t.forward(1)
-            t.setheading(float(t.heading())+choice([random(), -random()]))
-            t.penup()
-            t.forward(1)
+            t.right(randrange(-40, 40))
         # transforme tout le bleu en noir
         for L in range(321):
             for l in range(223):
@@ -72,7 +68,7 @@ def draw_borders():
 
 
 def fill_colors():
-    pass
+    collist=[color(255,0,0), color(0,255,0), color(0,0,255), color(255,255,0)]
 
 initialize()
 draw_borders()
