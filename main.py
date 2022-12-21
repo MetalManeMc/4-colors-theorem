@@ -4,10 +4,18 @@ from random import *
 import time
 
 
-def initialize():   #initialise l'écran
-    k.fill_rect(0, 0, 320, 222, k.color(248, 252, 248)) #uniformise le fond d'écran en blanc
+def ktt(coo: list):
+    coo[0] -= 160
+    coo[1] = -coo[1]-111
+    return coo
+
+
+def initialize():  # initialise l'écran
+    # uniformise le fond d'écran en blanc
+    k.fill_rect(0, 0, 320, 222, k.color(248, 252, 248))
     t.penup()
-    t.goto(-160, -111)  #va dans un coin pour se préparer à dessiner un cadre
+    # dessine un cadre noir
+    t.goto(-160, -111)
     t.pendown()
     t.goto(-160, 111)
     t.goto(160, 111)
@@ -18,12 +26,13 @@ def initialize():   #initialise l'écran
 
 def draw_borders():
     for i in range(10):
-        x=randrange(0,321)
-        y=randrange(0,223)
-        while k.get_pixel(x,y)!=(0,0,0):
-            x=randrange(0,321)
-            y=randrange(0,223)
-        print(x,y)
+        x = randrange(0, 321)
+        y = randrange(0, 223)
+        while k.get_pixel(x, y) != (0, 0, 0):
+            x = randrange(0, 321)
+            y = randrange(0, 223)
+        print(x, y)
+        t.goto(ktt([x, y]))
 
 
 initialize()
