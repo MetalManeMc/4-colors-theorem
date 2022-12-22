@@ -3,7 +3,9 @@ import turtle as t
 from random import *
 import time
 
-colors = [(0, 0, 248)]
+collist = [k.color(255, 0, 0), k.color(0, 255, 0),
+           k.color(0, 0, 255), k.color(255, 255, 0)]
+countries = {}
 
 
 def ktt(coo: list):
@@ -30,6 +32,7 @@ def initialize():  # initialise l'écran
     t.goto(160, -111)
     t.goto(-160, -111)
     t.hideturtle()
+
 
 def draw_borders():
     for i in range(20):
@@ -74,7 +77,20 @@ def draw_borders():
 
 
 def fill_colors():
-    collist=[k.color(255,0,0), k.color(0,255,0), k.color(0,0,255), k.color(255,255,0)]
+    for L in range(320):
+        for l in range(222):
+            if k.get_pixel(L, l) == (248, 252, 248):
+                col = choice(collist)
+                countries[(L, l)] = col
+                k.set_pixel(L, l, col)
+                for L1 in range(320):
+                    for l1 in range(222):
+                        if k.get_pixel(L1, l1) == (248, 252, 248):
+                            if k.get_pixel(L1-1, l1)==col:
+                                k.set_pixel(L1,l1,col)
+                            elif k.get_pixel(L1, l1-1)==col:
+                                k.set_pixel(L1,l1,col)
+
 
 initialize()
 draw_borders()
