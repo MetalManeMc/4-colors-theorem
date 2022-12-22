@@ -33,33 +33,38 @@ def initialize():  # initialise l'écran
     t.hideturtle()
 
 def draw_borders():
-    t.speed(10)
-    for i in range(50):
+    for i in range(30):
         t.penup()
-        # cherche un pixel d'où commencer le tracé
+        # cherche un point noir d'où commencer le tracé
         x = randrange(0, 321)
         y = randrange(0, 223)
         while k.get_pixel(x, y) != (0, 0, 0):
             x = randrange(0, 321)
             y = randrange(0, 223)
+        #print(x, y, ktt([x, y]))
         t.goto(ktt([x, y]))
-        # prend un angle approprié à la position
-        if x <=160:
-            t.setheading(270)
-        elif x >160:
-            t.setheading(90)
-        if y <=111:
+        # prend un angle apporprié à la position
+        if x <= 10:
             t.setheading(0)
-        elif y >111:
+        elif x >= 310:
             t.setheading(180)
-        # modifie l'angle
-        t.setheading(t.heading()+randrange(-10, 10))
+        elif y <= 10:
+            t.setheading(270)
+        elif y >= 112:
+            t.setheading(90)
+        # modifie légèrement l'angle
+        t.setheading(t.heading()+randrange(-3, 3))
+        #print(t.position(), ttk(list(t.position())))
         t.forward(1)
         t.color("blue")
         # Si le pixel est blanc, avance.
         while k.get_pixel(int(ttk(list(t.position()))[0]), int(ttk(list(t.position()))[1])) != (0, 0, 0):
+            t.pendown()
+            t.backward(1)
             t.forward(1)
-            t.right(randrange(-40, 40))
+            t.setheading(float(t.heading())+choice([random(), -random()]))
+            t.penup()
+            t.forward(1)
         # transforme tout le bleu en noir
         for L in range(321):
             for l in range(223):
@@ -68,7 +73,7 @@ def draw_borders():
 
 
 def fill_colors():
-    collist=[color(255,0,0), color(0,255,0), color(0,0,255), color(255,255,0)]
+    collist=[k.color(255,0,0), k.color(0,255,0), k.color(0,0,255), k.color(255,255,0)]
 
 initialize()
 draw_borders()
