@@ -6,13 +6,13 @@ import time
 colors = [(0, 0, 248)]
 
 
-def ktt(coo: list): #kandinsky to turtle
+def ktt(coo: list):
     coo[0] -= 160
     coo[1] = -coo[1]+111
     return coo
 
 
-def ttk(coo: list): #turtle to kandinsky
+def ttk(coo: list):
     coo[0] += 160
     coo[1] = -coo[1]+111
     return coo
@@ -21,7 +21,6 @@ def ttk(coo: list): #turtle to kandinsky
 def initialize():  # initialise l'écran
     # uniformise le fond d'écran en blanc
     k.fill_rect(0, 0, 320, 222, k.color(248, 252, 248))
-    t.speed(10)
     t.penup()
     # dessine un cadre noir
     t.goto(-160, -111)
@@ -33,7 +32,8 @@ def initialize():  # initialise l'écran
     t.hideturtle()
 
 def draw_borders():
-    for i in range(30):
+    for i in range(20):
+
         t.penup()
         # cherche un point noir d'où commencer le tracé
         x = randrange(0, 321)
@@ -51,13 +51,14 @@ def draw_borders():
         elif y <= 10:
             t.setheading(270)
         elif y >= 112:
+
             t.setheading(90)
         # modifie légèrement l'angle
         t.setheading(t.heading()+randrange(-3, 3))
         #print(t.position(), ttk(list(t.position())))
         t.forward(1)
         t.color("blue")
-        # Si le pixel est blanc, avance.
+        # teste si le pixel devant est noir. S'il ne l'est pas, avance.
         while k.get_pixel(int(ttk(list(t.position()))[0]), int(ttk(list(t.position()))[1])) != (0, 0, 0):
             t.pendown()
             t.backward(1)
