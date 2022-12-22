@@ -20,6 +20,22 @@ def ttk(coo: list):
     return coo
 
 
+def fill_region(L, l, col):
+    k.set_pixel(L, l, col)
+    for l1 in range(222):
+        for L1 in range(320):
+            if k.get_pixel(L1, l1) == (248, 252, 248):
+                if k.get_pixel(L1-1, l1) == col or k.get_pixel(L1, l1-1) == col:
+                    k.set_pixel(L1, l1, col)
+    for l1 in range(222):
+        l1 = 222-l1
+        for L1 in range(320):
+            L1 = 320-L1
+            if k.get_pixel(L1, l1) == (248, 252, 248):
+                if k.get_pixel(L1+1, l1) == col or k.get_pixel(L1, l1+1) == col:
+                    k.set_pixel(L1, l1, col)
+
+
 def initialize():  # initialise l'écran
     # uniformise le fond d'écran en blanc
     k.fill_rect(0, 0, 320, 222, k.color(248, 252, 248))
@@ -77,21 +93,15 @@ def draw_borders():
 
 
 def fill_colors():
-    for L in range(320):
-        for l in range(222):
+    for l in range(222):
+        for L in range(320):
             if k.get_pixel(L, l) == (248, 252, 248):
                 col = choice(collist)
                 countries[(L, l)] = col
-                k.set_pixel(L, l, col)
-                for L1 in range(320):
-                    for l1 in range(222):
-                        if k.get_pixel(L1, l1) == (248, 252, 248):
-                            if k.get_pixel(L1-1, l1)==col:
-                                k.set_pixel(L1,l1,col)
-                            elif k.get_pixel(L1, l1-1)==col:
-                                k.set_pixel(L1,l1,col)
+                fill_region(L, l, col)
 
 
 initialize()
 draw_borders()
 fill_colors()
+print(countries)
