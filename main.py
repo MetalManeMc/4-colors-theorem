@@ -20,7 +20,7 @@ def ttk(coo: list):
     return coo
 
 
-def fill_region(L:int, l:int, col:tuple):
+def fill_region(L: int, l: int, col: tuple):
     k.set_pixel(L, l, col)
     for l1 in range(223):
         for L1 in range(321):
@@ -101,7 +101,39 @@ def fill_colors():
                 fill_region(L, l, col)
 
 
+def check_adjacent():
+    for l in range(223):
+        for L in range(321):
+            if k.get_pixel(L, l) == (0, 0, 0):
+                pix_colors = []
+                pix_colors.append(k.get_pixel(L+1, l))
+                pix_colors.append(k.get_pixel(L-1, l))
+                pix_colors.append(k.get_pixel(L, l+1))
+                pix_colors.append(k.get_pixel(L, l-1))
+                pix_colors = [
+                    color for color in pix_colors if color in collist]
+                #print(L, l, pix_colors)
+                end=False
+                for color in pix_colors:
+                    o_colors = [color for color in pix_colors]
+                    o_colors.remove(color) #pix_colors mysteriously disappears here
+                    #print(L, l, pix_colors, o_colors, color)
+                    if color in o_colors:
+                        print(l, L, pix_colors, color)
+                        k.set_pixel(L+3, l, (150, 150, 150))
+                        k.set_pixel(L-3, l, (150, 150, 150))
+                        k.set_pixel(L, l+3, (150, 150, 150))
+                        k.set_pixel(L, l-3, (150, 150, 150))
+                        end=True
+                    if end:break
+                if end:break
+            if end:break
+        if end:break
+        
+
+
 initialize()
 draw_borders()
 fill_colors()
+check_adjacent()
 print(countries)
