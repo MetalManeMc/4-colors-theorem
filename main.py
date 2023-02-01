@@ -1,4 +1,82 @@
-import kandinsky as k
+from turtle import *
+from random import *
+
+ht()
+colormode(255)
+speed(0)
+setup(420,322)  #taille de la fenêtre
+screensize(320,222,"white")   #taille de l'espace de dessein
+def initialize():  # initialise l'écran
+    tracer(0,0)
+    penup()
+    # dessine un cadre noir
+    goto(-160, -111)
+    pendown()
+    goto(-160, 111)
+    goto(160, 111)
+    goto(160, -111)
+    goto(-160, -111)
+    update()
+
+def draw_borders():
+    tracer(0,0)
+    for i in range(20):
+        color("black")
+        penup()
+        # cherche un point noir d'où commencer le tracé
+        x = randrange(-160, 161)
+        y = randrange(-111, 112)
+        #print(get_pixel(-160,-111))
+        while get_pixel(x, y) == "white":
+            x = randrange(-160, 161)
+            y = randrange(-111, 112)
+        #print(x, y, get_pixel(x, y))
+        goto(x,y)
+        # prend un angle apporprié à la position
+        if x <= -150:
+            setheading(0)
+        elif x >= 150:
+            setheading(180)
+        elif y <= -101:
+            setheading(90)
+        elif y >= 101:
+            setheading(270)
+        else: setheading(randrange(-360,361))
+        # modifie légèrement l'angle
+        setheading(heading()+randrange(-3, 3))
+        #print(t.position(), ttk(list(t.position())))
+        forward(1)
+        # teste si le pixel devant est noir. S'il ne l'est pas, avance.
+        while get_pixel(position()[0],position()[1]) == "white":
+            pendown()
+            backward(1)
+            forward(1)
+            setheading(float(heading())+choice([3*random(), -3*random()]))
+            penup()
+            forward(1)
+    update()
+
+def get_pixel(x, y):
+
+    # canvas use different coordinates
+    y = -y
+
+    canvas = getcanvas()
+    ids = canvas.find_overlapping(x, y, x, y)
+
+    if ids: # if list is not empty
+        index = ids[-1]
+        color = canvas.itemcget(index, "fill")
+        if color != '':
+            return color.lower()
+
+    return "white" # default color 
+
+initialize()
+draw_borders()
+input("a")
+
+"""import kandinsky as k
 import turtle as t
 from random import *
 import time
@@ -137,3 +215,4 @@ draw_borders()
 fill_colors()
 check_adjacent()
 print(countries)
+"""
