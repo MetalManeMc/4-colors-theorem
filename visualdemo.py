@@ -32,10 +32,21 @@ class Position():
             heading -= 360
         self.heading = heading
 
-    def getnext(self):
+    def validate_next(self):
         NextPosition = Position(self.x, self.y, self.heading)
         NextPosition.forward()
-        return NextPosition.get()
+        if NextPosition.get() == (255, 255, 255):
+            if not (NextPosition.x > 310 or NextPosition.x < 10 or NextPosition.y > 212 or NextPosition.y < 10):
+                if img.getpixel((NextPosition.x+1, NextPosition.y)) == (0, 0, 0) and img.getpixel((NextPosition.x, NextPosition.y+1)) == (0, 0, 0):
+                    return False
+                if img.getpixel((NextPosition.x-1, NextPosition.y)) == (0, 0, 0) and img.getpixel((NextPosition.x, NextPosition.y+1)) == (0, 0, 0):
+                    return False
+                if img.getpixel((NextPosition.x+1, NextPosition.y)) == (0, 0, 0) and img.getpixel((NextPosition.x, NextPosition.y-1)) == (0, 0, 0):
+                    return False
+                if img.getpixel((NextPosition.x-1, NextPosition.y)) == (0, 0, 0) and img.getpixel((NextPosition.x, NextPosition.y-1)) == (0, 0, 0):
+                    return False
+            return True
+        return False
 
     def forward(self, l=1):
         for i in range(l):
@@ -62,7 +73,6 @@ class Position():
             print("get() failed at position " + str(self.coo))
 
 
-
 pos = Position()
 
 
@@ -72,12 +82,10 @@ def draw_borders():
         # cherche un point noir d'où commencer le tracé
         x = randrange(0, 320)
         y = randrange(0, 222)
-        # print(get_pixel(-160,-111))
         while Position(x, y).get() == (255, 255, 255):
             x = randrange(0, 320)
             y = randrange(0, 222)
         pos.goto(x, y)
-        print("Initiated line:", pos.x, pos.y, pos.get())
         # prend un angle apporprié à la position
         if x <= 10:
             pos.setheading(0)
@@ -89,20 +97,18 @@ def draw_borders():
             pos.setheading(270)
         else:
             pos.setheading(randrange(0, 360))
-        # modifie légèrement l'angle
+        # modifie "légèrement" l'angle
         pos.setheading(pos.heading+randrange(-30, 30))
+        # print("Initiated line:", pos.x, pos.y, pos.get(), pos.heading)
         # teste si le pixel devant est noir. S'il ne l'est pas, avance.
-        while pos.getnext() == (255, 255, 255):
+        while pos.validate_next():
             #print(pos.x, pos.y, pos.get(), pos.heading)
             pos.forward(1)
             pos.place()
-            pos.setheading(pos.heading+choice([3*random(), -3*random()]))
-            img.save(imgname)
-            sleep(0.05)
-        print("Killed line:", pos.x, pos.y, pos.get(),
-              "with forward detection:", pos.getnext())
-        # img.save(str(i)+"-"+imgname)
-        # img.show()
+            pos.setheading(pos.heading+choice([10*random(), -10*random()]))
+        pos.forward(1)
+        pos.place()
+        # print("Killed line:", pos.x, pos.y, pos.get())
 
 
 draw_borders()
