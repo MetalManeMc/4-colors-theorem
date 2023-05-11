@@ -1,7 +1,6 @@
 """Le module PIL (Pillow) permet de modifier une image."""
-from time import time
+from time import time  # , sleep
 from random import randrange, random, choice
-#from time import sleep
 from PIL import Image, ImageDraw
 
 img = Image.new("RGB", (320, 222), "blue")
@@ -18,6 +17,7 @@ class Position():
     """
     Classe enregistrant la position et le comportement d'une sorte de mini-turtle.
     """
+
     def __init__(self, coo_x=0, coo_y=0, heading: float = 0):
         self.coo_x = coo_x
         self.coo_y = coo_y
@@ -51,17 +51,17 @@ class Position():
         if next_position.get() == (255, 255, 255):
             if not (next_position.coo_x > 310 or next_position.coo_x < 10
                     or next_position.coo_y > 212 or next_position.coo_y < 10):
-                if (img.getpixel((next_position.coo_x+1, next_position.coo_y)) == (0, 0, 0)
-                     and img.getpixel((next_position.coo_x, next_position.coo_y+1)) == (0, 0, 0)):
+                if (img.getpixel((next_position.coo_x+1, next_position.coo_y)) == (0, 0, 0) and
+                        img.getpixel((next_position.coo_x, next_position.coo_y+1)) == (0, 0, 0)):
                     return False
-                if (img.getpixel((next_position.coo_x-1, next_position.coo_y)) == (0, 0, 0)
-                     and img.getpixel((next_position.coo_x, next_position.coo_y+1)) == (0, 0, 0)):
+                if (img.getpixel((next_position.coo_x-1, next_position.coo_y)) == (0, 0, 0) and
+                        img.getpixel((next_position.coo_x, next_position.coo_y+1)) == (0, 0, 0)):
                     return False
-                if (img.getpixel((next_position.coo_x+1, next_position.coo_y)) == (0, 0, 0)
-                     and img.getpixel((next_position.coo_x, next_position.coo_y-1)) == (0, 0, 0)):
+                if (img.getpixel((next_position.coo_x+1, next_position.coo_y)) == (0, 0, 0) and
+                        img.getpixel((next_position.coo_x, next_position.coo_y-1)) == (0, 0, 0)):
                     return False
-                if (img.getpixel((next_position.coo_x-1, next_position.coo_y)) == (0, 0, 0)
-                     and img.getpixel((next_position.coo_x, next_position.coo_y-1)) == (0, 0, 0)):
+                if (img.getpixel((next_position.coo_x-1, next_position.coo_y)) == (0, 0, 0) and
+                        img.getpixel((next_position.coo_x, next_position.coo_y-1)) == (0, 0, 0)):
                     return False
             return True
         return False
@@ -100,6 +100,23 @@ class Position():
             print("get() failed at position " + str(self.coo))
 
 
+def has_border(coo_x, coo_y):
+    """
+    Détecte si le point de coordonnées (coo_x; coo_y) touche un pixel noir
+    """
+    if img.getpixel((coo_x, coo_y)) == (0, 0, 0):
+        return False
+    if img.getpixel((coo_x+1, coo_y)) == (0, 0, 0):
+        return True
+    if img.getpixel((coo_x-1, coo_y)) == (0, 0, 0):
+        return True
+    if img.getpixel((coo_x, coo_y+1)) == (0, 0, 0):
+        return True
+    if img.getpixel((coo_x, coo_y-1)) == (0, 0, 0):
+        return True
+    return False
+
+
 pos = Position()
 
 
@@ -131,13 +148,25 @@ def draw_borders():
         # print("Initiated line:", pos.coo_x, pos.coo_y, pos.get(), pos.heading)
         # teste si le pixel devant est noir. S'il ne l'est pas, avance.
         while pos.validate_next():
-            #print(pos.coo_x, pos.coo_y, pos.get(), pos.heading)
+            # print(pos.coo_x, pos.coo_y, pos.get(), pos.heading)
             pos.forward(1)
             pos.place()
             pos.setheading(pos.heading+choice([10*random(), -10*random()]))
         pos.forward(1)
         pos.place()
         # print("Killed line:", pos.coo_x, pos.coo_y, pos.get())
+
+
+def fill_controller():
+    """
+    Contrôle quelles zones vont être bruteforce_fill()
+    """
+    color = (0, 0, 255)
+    i = 0
+    for coo_y in range(1, 222):
+        for coo_x in range(1, 320):
+            if img.getpixel((coo_x, coo_y)) == (255, 255, 255) and not has_border(coo_x, coo_y):
+                pass
 
 
 draw_borders()
