@@ -100,19 +100,19 @@ class Position():
             print("get() failed at position " + str(self.coo))
 
 
-def has_border(coo_x, coo_y):
+def has_border(coo_x, coo_y, col):
     """
-    Détecte si le point de coordonnées (coo_x; coo_y) touche un pixel noir
+    Détecte si le point de coordonnées (coo_x; coo_y) touche un pixel de couleur col
     """
-    if img.getpixel((coo_x, coo_y)) == (0, 0, 0):
+    if img.getpixel((coo_x, coo_y)) != (255, 255, 255):
         return False
-    if img.getpixel((coo_x+1, coo_y)) == (0, 0, 0):
+    if img.getpixel((coo_x+1, coo_y)) == col:
         return True
-    if img.getpixel((coo_x-1, coo_y)) == (0, 0, 0):
+    if img.getpixel((coo_x-1, coo_y)) == col:
         return True
-    if img.getpixel((coo_x, coo_y+1)) == (0, 0, 0):
+    if img.getpixel((coo_x, coo_y+1)) == col:
         return True
-    if img.getpixel((coo_x, coo_y-1)) == (0, 0, 0):
+    if img.getpixel((coo_x, coo_y-1)) == col:
         return True
     return False
 
@@ -159,15 +159,28 @@ def draw_borders():
 
 def fill_controller():
     """
-    Contrôle quelles zones vont être bruteforce_fill()
+    Remplie chaque zone d'une conleur aléatoire
     """
-    color = (0, 0, 255)
-    i = 0
+    i = -1
     for coo_y in range(1, 222):
         for coo_x in range(1, 320):
-            if img.getpixel((coo_x, coo_y)) == (255, 255, 255) and not has_border(coo_x, coo_y):
-                pass
+            if img.getpixel((coo_x, coo_y)) == (255, 255, 255):
+                i += 1
+                col = (0+10*i, 0+10*i, 255-10*i)
+                useful = True
+                print("Started coloring in", col, "at", coo_x, coo_y)
+                img.putpixel((coo_x, coo_y), col)
+                while useful:
+                    useful = False
+                    for fill_y in range(1, 221):
+                        for fill_x in range(1, 319):
+                            if has_border(fill_x, fill_y, col):
+                                img.putpixel((fill_x, fill_y), col)
+                                useful = True
+                                #print('filled', fill_x, fill_y)
+                img.save(IMGNAME)
 
 
 draw_borders()
+fill_controller()
 img.save(IMGNAME)
