@@ -178,7 +178,7 @@ def fill_controller():
                                 img.putpixel((fill_x, fill_y), col)
                                 useful = True
                                 #print('filled', fill_x, fill_y)
-                img.save(IMGNAME)
+                #img.save(IMGNAME)
 
 
 COULEURS = {}
@@ -218,7 +218,7 @@ def color_graph(vertices, edges):
     """
     Colorie le graphe
     """
-    colors = ["red", "yellow", "blue", "green"]
+    colors = [(255, 0, 0), (255, 255, 0), (0, 0, 255), (0, 255, 0)]
     vertex_colors = {}
     for vertex in vertices:
         vertex_colors[vertex] = None
@@ -233,6 +233,7 @@ def color_graph(vertices, edges):
                 break
     return vertex_colors
 
+
 def get_neighbors(vertex, edges):
     """
     Cherche les sommets connectés à un sommet du graphe
@@ -245,10 +246,25 @@ def get_neighbors(vertex, edges):
             neighbors.add(edge[0])
     return neighbors
 
-# draw_borders()
-# fill_controller()
-img = Image.open("image_1683988825.3462548.png")
+
+def refill_map(graph):
+    """
+    Recolorie la carte en 4 couleurs
+    """
+    data = list(img.getdata())
+    for i, pixel in enumerate(data):
+        if pixel != (0, 0, 0):
+            data[i] = graph[COULEURS[str(pixel)]]
+    img.putdata(data)
+
+
+draw_borders()
+fill_controller()
+#img = Image.open("image_1683988825.3462548.png")
 create_graph()
+# print(LIAISONS)
 graphe = color_graph(list(COULEURS.values()), LIAISONS)
-print(LIAISONS)
-# img.save(IMGNAME)
+# print(list(img.getdata()))
+refill_map(graphe)
+
+img.save(IMGNAME)
