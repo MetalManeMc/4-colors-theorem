@@ -166,13 +166,13 @@ def fill_controller():
         for coo_x in range(1, 320):
             if img.getpixel((coo_x, coo_y)) == (255, 255, 255):
                 i += 1
-                col = (0+10*i, 0+10*i, 255-10*i)
+                col = (0+5*i, 0+5*i, 255-5*i)
                 useful = True
                 print("Started coloring in", col, "at", coo_x, coo_y)
                 img.putpixel((coo_x, coo_y), col)
                 while useful:
                     useful = False
-                    for fill_y in range(1, 221):
+                    for fill_y in range(2-coo_y, 221):
                         for fill_x in range(1, 319):
                             if has_border(fill_x, fill_y, col):
                                 img.putpixel((fill_x, fill_y), col)
@@ -181,6 +181,74 @@ def fill_controller():
                 img.save(IMGNAME)
 
 
-draw_borders()
-fill_controller()
-img.save(IMGNAME)
+COULEURS = {}
+LIAISONS = []
+
+
+def create_graph():
+    """
+    Crée un graphe à partr de l'image
+    """
+    i = 0
+    for coo_y in range(1, 221):
+        for coo_x in range(1, 319):
+            if img.getpixel((coo_x, coo_y)) == (0, 0, 0):
+                adj_colors = []
+                nextcords = [(coo_x+1, coo_y), (coo_x-1, coo_y),
+                             (coo_x, coo_y+1), (coo_x, coo_y-1)]
+                for nextcord in nextcords:
+                    nextcol = img.getpixel(nextcord)
+                    adj_colors.append(str(nextcol))
+                    if nextcol != (0, 0, 0) and nextcol not in adj_colors:
+                        if str(nextcol) not in [k for k in COULEURS]:
+                            i += 1
+                            COULEURS[str(nextcol)] = str(i)
+                for ind1 in range(4):
+                    for ind2 in range(4):
+                        if ind1 != ind2:
+                            if (adj_colors[ind1] != adj_colors[ind2] and adj_colors[ind1] !=
+                                    "(0, 0, 0)" and adj_colors[ind2] != "(0, 0, 0)"):
+                                liaison = (
+                                    COULEURS[adj_colors[ind1]], COULEURS[adj_colors[ind2]])
+                                if liaison not in LIAISONS:
+                                    LIAISONS.append(liaison)
+
+
+def color_graph(vertices, edges):
+    """
+    Colorie le graphe
+    """
+    colors = ["red", "yellow", "blue", "green"]
+    vertex_colors = {}
+    for vertex in vertices:
+        vertex_colors[vertex] = None
+    for vertex in vertices:
+        used_colors = set()
+        for neighbor in get_neighbors(vertex, edges):
+            if vertex_colors[neighbor] is not None:
+                used_colors.add(vertex_colors[neighbor])
+        for color in colors:
+            if color not in used_colors:
+                vertex_colors[vertex] = color
+                break
+    return vertex_colors
+
+def get_neighbors(vertex, edges):
+    """
+    Cherche les sommets connectés à un sommet du graphe
+    """
+    neighbors = set()
+    for edge in edges:
+        if vertex == edge[0]:
+            neighbors.add(edge[1])
+        elif vertex == edge[1]:
+            neighbors.add(edge[0])
+    return neighbors
+
+# draw_borders()
+# fill_controller()
+img = Image.open("image_1683988825.3462548.png")
+create_graph()
+graphe = color_graph(list(COULEURS.values()), LIAISONS)
+print(LIAISONS)
+# img.save(IMGNAME)
