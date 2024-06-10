@@ -1,6 +1,6 @@
 A little script to help visualize the [4 colors theorem](https://en.wikipedia.org/wiki/Four_color_theorem).
 
-Extremely unefficient.
+Extremely inefficient.
 
 Requires Python (tested in 3.9+) and Pillow library.
 
